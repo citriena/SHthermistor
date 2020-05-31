@@ -152,7 +152,7 @@ SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, fl
 
 例えば、秋月電子商会で扱っている　[SEMITEC株式会社103AT-11](http://akizukidenshi.com/catalog/g/gP-07257/)の場合は、
 ````
-SHthermistor thermistor(0, 25, 50, 27280, 10000, 4160, 1, 10000, NTC_VIN, 9);
+SHthermistor thermistor(0, 25, 50, 27280, 10000, 4160, 1, 10000, NTC_GND, 9);
 ````
 みたいに指定します。
 
