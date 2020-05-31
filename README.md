@@ -20,7 +20,7 @@ Ether of the connection below is available.
 ````
 ### Constructor
 ````
-SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t vinPin, float offsetT, uint32_t exciteValue)
+SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue)
 ````
 * **SH\_T1, SH\_T2, SH\_T3:** low, mid, and high temperature (Celcius)
 
@@ -30,6 +30,7 @@ SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, fl
 * **ntcConnect:** connection of thermistor and series resistor
   * NTC_EXCITE: Thermistor is connected to excitePin (connecton 1).
   * NTC_GND: Thermistor is connected to GND (connection 2).
+* **excitePin(optional):** Voltage supply pin. When you designate excitePin the voltage will be supplied only during measurement.
 * **offsetTemp:** offset value added to calculated temperature
 * **exciteValue (optional)** : ADC read value of excitePin (in case of Arduino excitePin = VREF( = Vdd))
   * ADC_10_BIT_VALUE: 10 bit (default)
@@ -37,7 +38,6 @@ SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, fl
   * ADC_14_BIT_VALUE: 14 bit
   * ADC_16_BIT_VALUE: 16 bit
   * set EXCITE_VALUE directly in case of using external ADC with internal VREF
-* **excitePin(optional):** Voltage supply pin. When you designate excitePin the voltage will be supplied only during measurement.
 
 ### Functions
 ````
@@ -120,7 +120,7 @@ https://edwardmallon.files.wordpress.com/2017/04/ntc-steinhart_and_hart_calculat
 
 ### コンストラクタ
 ````
-SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t vinPin, float offsetT, uint32_t exciteValue);
+SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue);
 
 ````
 * **SH\_T1, SH\_T2, SH\_T3:** 使用温度範囲を含む3点の温度（℃）
