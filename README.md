@@ -20,7 +20,8 @@ Ether of the connection below is available.
 ````
 ### Constructor
 ````
-SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, int8_t adcPin, float divR, NTC_CONNECT_t ntcConnect, int8_t vinPin, float offsetT, uint32_t exciteValue)````
+SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, int8_t adcPin, float divR, NTC_CONNECT_t ntcConnect, int8_t vinPin, float offsetT, uint32_t exciteValue)
+````
 * **SH\_T1, SH\_T2, SH\_T3:** low, mid, and high temperature (Celcius)
 
 * **SH\_R1, SH\_R2, SH\_R3:** thermistor resistance (ohm) at SH_T1, SH_T2, SH_T3
