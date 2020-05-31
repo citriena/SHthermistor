@@ -8,7 +8,7 @@
 
 
 #undef DEFAULT_EXCITE_VALUE
-#define DEFAULT_EXCITE_VALUE ADC_12BIT_VALUE     // 1024 (2^10) 
+#define DEFAULT_EXCITE_VALUE ADC_12BIT_VALUE 
 
 class SHthermistorMCP320X : public SHthermistor {
 public:
