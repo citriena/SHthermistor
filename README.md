@@ -20,24 +20,24 @@ Ether of the connection below is available.
 ````
 ### Constructor
 ````
-SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, int8_t adcPin, float divR, NTC_CONNECT_t ntcConnect, int8_t vinPin, float offsetT, uint32_t exciteValue)
+SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, int8_t adcPin, float divR, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue)
 ````
 * **SH\_T1, SH\_T2, SH\_T3:** low, mid, and high temperature (Celcius)
 
 * **SH\_R1, SH\_R2, SH\_R3:** thermistor resistance (ohm) at SH_T1, SH_T2, SH_T3
-* **adcPin:** analog pin connected to thermistor and series resistor
 * **divR:** resistance value (ohm) of series divider resistor
+* **adcPin:** analog pin connected to thermistor and series resistor
 * **ntcConnect:** connection of thermistor and series resistor
   * NTC_EXCITE: Thermistor is connected to excitePin (connecton 1).
   * NTC_GND: Thermistor is connected to GND (connection 2).
-* **offsetTemp:** offset value added to calculated temperature
-* **exciteValue (optional)** : ADC read value of excitePin (in case of Arduino excitePin = VREF( = Vdd))
+* **excitePin(optional):** Voltage supply pin. When you designate excitePin the voltage will be supplied only during measurement.
+* **offsetTemp(optional):** offset value added to calculated temperature
+* **exciteValue(optional)** : ADC read value of excitePin (in case of Arduino excitePin = VREF( = Vdd))
   * ADC_10_BIT_VALUE: 10 bit (default)
   * ADC_12_BIT_VALUE: 12 bit
   * ADC_14_BIT_VALUE: 14 bit
   * ADC_16_BIT_VALUE: 16 bit
   * set EXCITE_VALUEvalue directly in case of using external ADC with internal VREF
-* **excitePin(optional):** Voltage supply pin. When you designate excitePin the voltage will be supplied only during measurement.
 
 ### Functions
 ````
@@ -120,7 +120,7 @@ https://edwardmallon.files.wordpress.com/2017/04/ntc-steinhart_and_hart_calculat
 
 ### コンストラクタ
 ````
-SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, int8_t adcPin, float divR, NTC_CONNECT_t ntcConnect, int8_t vinPin, float offsetT, uint32_t exciteValue);
+SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, int8_t adcPin, float divR, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue);
 
 ````
 * **SH\_T1, SH\_T2, SH\_T3:** 使用温度範囲を含む3点の温度（℃）
@@ -135,10 +135,10 @@ SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, fl
 * **ntcConnect:** 分圧抵抗とサーミスタの接続方法
   * NTC_EXCITE: サーミスタがexcitePin側（接続方法の1）
   * NTC_GND: サーミスタがGND側（接続方法の2）
-* **int8_t excitePin(オプション):** サーミスタ給電ピン
+* **excitePin(オプション):** サーミスタ給電ピン
   * 指定すると測定時のみexcitePinに給電します。
   * デフォルト値は「-1」（制御しない）です。
-* **offsetTemp:** 測定温度補正値（℃）
+* **offsetTemp(オプション):** 測定温度補正値（℃）
   * 計算値にこの補正値を加算して測定値とします。
 * **exciteValue(オプション):** ADC(ADコンバータ）のexcitePin 読み取り値
   * 以下の設定ができます。

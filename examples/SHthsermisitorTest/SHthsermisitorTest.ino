@@ -1,6 +1,6 @@
 #include <SHthermistor.h>
 
-SHthermistor thermistor(0, 25, 50, 27280, 10000, 4160, 1, 10000, NTC_GND, 0, 9);
+SHthermistor thermistor(0, 25, 50, 27280, 10000, 4160, 10000, 1, NTC_GND, 0, 9);
 
 void setup() {
   // put your setup code here, to run once:

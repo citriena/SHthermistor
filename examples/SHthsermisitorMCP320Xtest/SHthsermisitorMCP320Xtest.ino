@@ -1,6 +1,6 @@
 #include <SHthermistorMCP320X.h>
 
-SHthermistorMCP320X thermistor(0, 25, 50, 27280, 10000, 4160, 1, 10000, NTC_GND);
+SHthermistorMCP320X thermistor(0, 25, 50, 27280, 10000, 4160, 10000, 1, NTC_GND);
 
 void setup() {
   // put your setup code here, to run once:

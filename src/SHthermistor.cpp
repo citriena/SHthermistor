@@ -6,7 +6,7 @@
 // set thermistor resistance SH_R1, SH_R2, SH_R3 (ohm) at SH_T1, SH_T2, SH_T3 (Celcius)
 // John M. Zurbuchen. Precision thermistor thermometry. Measurement Science Conference Tutorial: Thermometry-Fundamentals and Practice, 2000.
 // http://www.nktherm.com/tec/linearize.html  Steinhart and Hart 式によるサーミスタ抵抗値の温度変換
-SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, int8_t adcPin, float divR, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue) {
+SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue) {
 
   SH_T1 += 273.15;
   SH_T2 += 273.15;
@@ -32,18 +32,18 @@ SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, f
 }
 
 
-SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, int8_t adcPin, float divR, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT) {
-  SHthermistor(SH_T1, SH_T2, SH_T3, SH_R1, SH_R2, SH_R3, adcPin, divR, ntcConnect, excitePin, offsetT, DEFAULT_EXCITE_VALUE);
+SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT) {
+  SHthermistor(SH_T1, SH_T2, SH_T3, SH_R1, SH_R2, SH_R3, divR, adcPin, ntcConnect, excitePin, offsetT, DEFAULT_EXCITE_VALUE);
 }
 
 
-SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, int8_t adcPin, float divR, NTC_CONNECT_t ntcConnect, int8_t excitePin) {
-  SHthermistor(SH_T1, SH_T2, SH_T3, SH_R1, SH_R2, SH_R3, adcPin, divR, ntcConnect, excitePin, 0, DEFAULT_EXCITE_VALUE);
+SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin) {
+  SHthermistor(SH_T1, SH_T2, SH_T3, SH_R1, SH_R2, SH_R3, divR, adcPin, ntcConnect, excitePin, 0, DEFAULT_EXCITE_VALUE);
 }
 
 
-SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, int8_t adcPin, float divR, NTC_CONNECT_t ntcConnect) {
-  SHthermistor(SH_T1, SH_T2, SH_T3, SH_R1, SH_R2, SH_R3, adcPin, divR, ntcConnect, -1, 0, DEFAULT_EXCITE_VALUE);
+SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int8_t adcPin, NTC_CONNECT_t ntcConnect) {
+  SHthermistor(SH_T1, SH_T2, SH_T3, SH_R1, SH_R2, SH_R3, divR, adcPin, ntcConnect, -1, 0, DEFAULT_EXCITE_VALUE);
 }
 
 

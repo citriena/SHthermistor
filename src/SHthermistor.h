@@ -30,19 +30,19 @@ class SHthermistor {
 public:
   SHthermistor(float SH_T1, float SH_T2, float SH_T3, // 
                float SH_R1, float SH_R2, float SH_R3, // 
-               int8_t adcPin,               // 
                float divR,                  // 
+               int8_t adcPin,               // 
                NTC_CONNECT_t ntcConnect,    // 
                int8_t vinPin,               // 
                float offsetT,               // 
                uint32_t exciteValue         // 
                );
 
-  SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, int8_t adcPin, float divR, NTC_CONNECT_t ntcConnect, int8_t vinPin, float offsetT);
+  SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t vinPin, float offsetT);
 
-  SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, int8_t adcPin, float divR, NTC_CONNECT_t ntcConnect, int8_t vinPin);
+  SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t vinPin);
 
-  SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, int8_t adcPin, float divR, NTC_CONNECT_t ntcConnect);
+  SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int8_t adcPin, NTC_CONNECT_t ntcConnect);
 
 
   float readR();
