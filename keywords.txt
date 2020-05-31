@@ -1,0 +1,23 @@
+#######################################
+# Syntax Coloring Map For SHthermistor
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+SHthermistor	KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+readR	KEYWORD2
+r2temp	KEYWORD2
+readTemp	KEYWORD2
+setDivR	KEYWORD2
+setOffsetTemp	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
