@@ -93,7 +93,7 @@ https://edwardmallon.files.wordpress.com/2017/04/ntc-steinhart_and_hart_calculat
 
   * 以下に示すSteinhart and Hart 式を使ってサーミスタの抵抗値から温度を算出します。Steinhart and Hart 式は私が知る限り温度とサーミスタの抵抗値との関係を最もよくあらわす関係式です。
 ```
-1/T = A + B\*ln(R) + C\*(ln(R))^3
+1/T = A + B*ln(R) + C*(ln(R))^3
 ```
   * Steinhart and Hart 式の利用にもB定数から近似する方法等いろいろあるようですが、きちんと三元連立方程式を解いてSteinhart and Hart式の係数を出しています。サーミスタによって異なるかもしれませんが、私が主に使っているSEMITEC株式会社103AT-11では 0, 25, 50℃で係数を出せばその範囲でのデータシートとの誤差は**0.01℃**以内です。
 
