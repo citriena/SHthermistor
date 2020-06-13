@@ -1,5 +1,5 @@
 # SHthermistor
- v1.0  citriena May 2020
+ v1.0  citriena June 2020
 
 ## Introduction
 **SHthermistor** is an Arduino library that supports temperature measurements with NTC thermistor based on Steinhart-Hart equation.
@@ -9,11 +9,14 @@
 ```math
  1/T = A + B*ln(R) + C*(ln(R))^3
 ```
+The deviation between datasheet values and Steinhart-Hart equation is less than 0.01 °C from 0 to 50°C in case of
+103AT-11 thermistor (SEMITEC Corporation).
+* use average of 3 median±1 values among 11 measurements, not overall average, to avoid error caused by surge pulse.
 
 ## Usage
-### Connection
+### Circuit
 
-Ether of the connection below is available.
+Ether of the circuits below is available.
 ````
  1. Vdd(excitePin)---NTC thermistor---adcPin---SERIES_RESISTOR---GND
  2. Vdd(excitePin)---SERIES_RESISTOR---adcPin---NTC thermistor---GND
@@ -22,22 +25,26 @@ Ether of the connection below is available.
 ````
 SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue)
 ````
-* **SH\_T1, SH\_T2, SH\_T3:** low, mid, and high temperature (Celcius)
-
+* **SH\_T1, SH\_T2, SH\_T3:** low, mid, and high temperature (Celcius) including actual measure condition
 * **SH\_R1, SH\_R2, SH\_R3:** thermistor resistance (ohm) at SH_T1, SH_T2, SH_T3
 * **divR:** resistance value (ohm) of series divider resistor
 * **adcPin:** analog pin connected to thermistor and series resistor
 * **ntcConnect:** connection of thermistor and series resistor
-  * NTC_EXCITE: Thermistor is connected to excitePin (connecton 1).
-  * NTC_GND: Thermistor is connected to GND (connection 2).
-* **excitePin(optional):** Voltage supply pin. When you designate excitePin the voltage will be supplied only during measurement.
+  * NTC_EXCITE: Thermistor is connected to excitePin (circuit 1).
+  * NTC_GND: Thermistor is connected to GND (circuit 2).
+* **excitePin(optional):** Voltage supply pin. When excitePin is set the voltage will be supplied only during measurement. Default value is -1 (do not control).
 * **offsetTemp:** offset value added to calculated temperature
 * **exciteValue (optional)** : ADC read value of excitePin (in case of Arduino excitePin = VREF( = Vdd))
   * ADC_10_BIT_VALUE: 10 bit (default)
   * ADC_12_BIT_VALUE: 12 bit
   * ADC_14_BIT_VALUE: 14 bit
   * ADC_16_BIT_VALUE: 16 bit
-  * set EXCITE_VALUE directly in case of using external ADC with internal VREF
+  * set EXCITE_VALUE directly in case of using external ADC with internal VREF etc.
+
+If you want to set coefficients of Steinhart and Hart equation directly use following constructor.
+````
+SHthermistor(float shA, float shB, float shC, float divR, uint8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue);
+````
 
 ### Functions
 ````
@@ -45,39 +52,27 @@ float readTemp();
 ````
 returns thermistor temperature
 
-use median among 11 thermistor resisstance measurements to caclurete temperature
-
 ````
 float readR();
 ````
 returns thermistor resitance
-
-Most of the case you do not need to use readR().
-
 ````
 float r2temp(float r);
 ````
-returns calculated temperature from thermistor resistance
-
-Most of the case you do not need to use r2temp().
+returns temperature calculated from thermistor resistance
 
 ````
 void setDivR(float divR);
 ````
 set series resistance
 
-Series resistance can be set in Constructor so most of the case setDivR() is not necessary.
-
 ````
 void setOffsetTemp(float offsetT);
 ````
 set offset value added to calculated temperature
 
-Offset value can be set in Constructor so most of the case setOffsetTemp() is not necessary.
-
-
 ### Using external ADC
-Arduino Uno R3 have ADC of 10 bits. It is sufficient for 0.5 degree resolution. But if you need 0.1 degree resolution at least ADC of 12 bits is necessary.. SHthermistorMCP320X is a sample library containing SHthermistorMCP320X class, subclass of SHthermistor, for using Microchip MCP320X (MCP3201/3202/3204/3208) instead of Arduino internal ADC without modifying SHthermistor library.
+Arduino Uno R3 have ADC of 10 bits. It is sufficient for 0.5 degree resolution. But if you need 0.1 degree resolution at least ADC of 12 bits is necessary. SHthermistorMCP320X is a sample library containing SHthermistorMCP320X class, subclass of SHthermistor, for using Microchip MCP320X (MCP3201/3202/3204/3208) instead of Arduino internal ADC without modifying SHthermistor library.
 
 SHthermistorMCP320X class inherets all the attributes of the SHthermistor class, have new member function of begin() to initialize MCP320X and overrides readAdc() to read MCP320X.
 
@@ -103,8 +98,8 @@ https://edwardmallon.files.wordpress.com/2017/04/ntc-steinhart_and_hart_calculat
   * Steinhart and Hart 式の利用にもB定数から近似する方法等いろいろあるようですが、きちんと三元連立方程式を解いてSteinhart and Hart式の係数を出しています。サーミスタによって異なるかもしれませんが、私が主に使っているSEMITEC株式会社103AT-11では 0, 25, 50℃で係数を出せばその範囲でのデータシートとの誤差は**0.01℃**以内です。
 
 
-* 1回の測定で11回計測し、中央値を使って温度変換
-  * 平均値だとスパイクノイズが入ったときに誤差が大きくなると考え、中央値で計算するようにしています。
+* 1回の測定で11回計測し、中央3値の平均を使って温度変換
+  * 単純な平均値だとスパイクノイズが入ったときに誤差が大きくなると考え、中央３値の平均で計算するようにしています。
 * 測定時のみサーミスタに通電し、消費電流削減、および自己発熱による誤差抑制が可能
   * 自己発熱による誤差抑制にはどの程度効果があるかわかりません。
 
@@ -120,7 +115,7 @@ https://edwardmallon.files.wordpress.com/2017/04/ntc-steinhart_and_hart_calculat
 
 ### コンストラクタ
 ````
-SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue);
+SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, uint8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue);
 
 ````
 * **SH\_T1, SH\_T2, SH\_T3:** 使用温度範囲を含む3点の温度（℃）
@@ -135,7 +130,7 @@ SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, fl
 * **ntcConnect:** 分圧抵抗とサーミスタの接続方法
   * NTC_EXCITE: サーミスタがexcitePin側（接続方法の1）
   * NTC_GND: サーミスタがGND側（接続方法の2）
-* **int8_t excitePin(オプション):** サーミスタ給電ピン
+* **excitePin(オプション):** サーミスタ給電ピン
   * 指定すると測定時のみexcitePinに給電します。
   * デフォルト値は「-1」（制御しない）です。
 * **offsetTemp:** 測定温度補正値（℃）
@@ -155,6 +150,12 @@ SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, fl
 SHthermistor thermistor(0, 25, 50, 27280, 10000, 4160, 1, 10000, NTC_GND, 9);
 ````
 みたいに指定します。
+
+Steinhart and Hart式の係数を直接指定したい場合は、
+````
+SHthermistor(float shA, float shB, float shC, float divR, uint8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue);
+````
+を使ってください。
 
 ### 機能
 ````
@@ -201,34 +202,37 @@ ADコンバータのビット数が12のDUEを使ってもよいのですが、�
 SHthermistorクラスのメンバ関数であるreadAdc() （ADコンバータ読み取り関数）は virtual指定してあります（仮想関数）。このため、派生クラスで再定義（オーバーライド）できます。これを利用して、使用するADコンバータ用にSHthermistorの派生クラスを作成し、readAdc()を再定義すればSHthermistorを書き換えることなく別途ADコンバータが利用できます。必要に応じ、begin() 等メンバ関数を追加してADコンバータの初期化を行ないます。
 
 #### 外部ADコンバータ接続方法
-ADコンバータによって接続方法が異なります。概要だけ説明します。
+ADコンバータの電圧リファレンス（VREF）の種類によって接続方法が異なります。概要だけ説明します。
 * VddがVREFを兼ねているもの
-  * adcPinに換えてADコンバータの入力を接続するだけでば使えます。
+  * adcPinに換えてADコンバータの入力をサーミスタと分圧抵抗に接続するだけで使えます。
 * VREF端子があるもの
-  * adcPinに換えてADコンバータの入力を接続するとともに、VREF端子をVddもしくはexcitePinに接続します。
+  * adcPinに換えてADコンバータの入力をサーミスタと分圧抵抗に接続するとともに、VREF端子をVddもしくはexcitePinに接続します。
 * 内部VREF
   * 2ch以上必要です。
   * 内部VREF以下の安定電圧を別途用意してexcitePinの代用とします。
-  * 1chで初期化時、もしくはreadAdc() 内で上の代用excitePinを読み取り、exciteValueとして setExciteValue(uint32_t exciteValue); で設定します。
-  * もう1chは readAdc(); 内でadcPinを読み取り、値を返します。
-  * このようにすれば使えるはずですが、面倒ですので上記2つのどちらかを使えるADコンバータを使った方が簡単です。
+  * 1chは初期化時、もしくはreadAdc() 内で上の代用excitePinを読み取り、その値をexciteValueとして setExciteValue(uint32_t exciteValue) で設定します。
+  * もう1chは readAdc() 内でadcPinを読み取り、値を返します。
+
+最後の方法（内部VREF）は面倒ですので、はじめの2つのどちらかの方法を使えるADコンバータを使った方が簡単です。
 
 
 #### 外部ADコンバータ使用例
 
-Microchip MCP3204をADコンバータとして使う場合用に作成したのがSHthermistorMCP320X.h, SHthermistorMCP320X.cpp です。MCP3201/3202/3208でも変更無しで使えると思います。
+VREF端子があるMicrochip MCP3204をADコンバータとして使う場合用に作成したのがsamples/SHthsermisitorMCP320Xtestフォルダ内にある
+SHthermistorMCP320X.h, SHthermistorMCP320X.cpp、およびそれらを使ったサンプルスケッチのSHthsermisitorMCP320Xtest.inoです。
+MCP3201/3202/3208でも変更無しで使えると思います。
 
-これらのファイルでは、SHthermistorから派生したSHthermistorMCP320Xクラスが定義されています。SHthermistorMCP320Xクラスでは新たなメンバ関数として
+これらのファイルでは、SHthermistorクラスから派生したSHthermistorMCP320Xクラスが定義されています。SHthermistorMCP320Xクラスでは新たなメンバ関数として
 ````
-void begin(int8_t SELPIN, int8_t channel); ：ADコンバータの初期化
+void begin(int8_t SELPIN); ：ADコンバータの初期化等
 ````
-* SELPIN: MCP3204 のChipSelect に接続するピン（SPI用）
-* channel: MCP3204 で使うチャンネル
+*  SELPIN: MCP3204 のChipSelect/Shutdown pin に接続するArduinoのピン（SPI用）
 
-を定義するとともに、SHthermistorから継承した
+を定義するとともに、SHthermistorクラスから継承した
 ````
 uint16_t readAdc(); ：ADコンバータ読み取り
 ````
-を再定義してあります。OOPは付け焼き刃なのでこれが適切な方法かわかりませんが、一応うまく動くようです。
+を再定義してあります。コンストラクタのadcPinはMCP3204のチャンネル指定となります。
 
+OOPは付け焼き刃なのでこれが適切な方法かわかりませんが、一応うまく動くようです。
 これらの使い方はサンプルスケッチを見てください。

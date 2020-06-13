@@ -12,7 +12,9 @@ SHthermistor	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
+setSHcoef	KEYWORD2
 readR	KEYWORD2
+readAdc	KEYWORD2
 r2temp	KEYWORD2
 readTemp	KEYWORD2
 setDivR	KEYWORD2

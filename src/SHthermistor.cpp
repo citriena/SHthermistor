@@ -1,13 +1,87 @@
 #include <SHthermistor.h>
-#include <Arduino.h>
 
 // STEINHART & HART EQUATION: 1/T = a + b(lnR) + c(lnR)^3
 // Solve three simultaneous equations to obtain coefficients a,b,c:
 // set thermistor resistance SH_R1, SH_R2, SH_R3 (ohm) at SH_T1, SH_T2, SH_T3 (Celcius)
 // John M. Zurbuchen. Precision thermistor thermometry. Measurement Science Conference Tutorial: Thermometry-Fundamentals and Practice, 2000.
 // http://www.nktherm.com/tec/linearize.html  Steinhart and Hart 式によるサーミスタ抵抗値の温度変換
-SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue) {
 
+
+SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, uint8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue) :
+  _DIV_R(divR),
+  _ADC_CHANNEL(adcPin),
+  _OFFSET_TEMP(offsetT),
+  _EXCITE_PIN(excitePin),
+  _NTC_CONNECT(ntcConnect),
+  _EXCITE_VALUE(exciteValue)
+{
+  setSHcoef(SH_T1, SH_T2, SH_T3, SH_R1, SH_R2, SH_R3);
+  setExciteValue(exciteValue);
+}
+
+
+SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, uint8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT) :
+  _DIV_R(divR),
+  _ADC_CHANNEL(adcPin),
+  _OFFSET_TEMP(offsetT),
+  _EXCITE_PIN(excitePin),
+  _NTC_CONNECT(ntcConnect),
+  _EXCITE_VALUE(DEFAULT_EXCITE_VALUE)
+{
+  setSHcoef(SH_T1, SH_T2, SH_T3, SH_R1, SH_R2, SH_R3);
+  setExciteValue(DEFAULT_EXCITE_VALUE);
+}
+
+
+SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, uint8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin) :
+  _DIV_R(divR),
+  _ADC_CHANNEL(adcPin),
+  _OFFSET_TEMP(0),
+  _EXCITE_PIN(excitePin),
+  _NTC_CONNECT(ntcConnect),
+  _EXCITE_VALUE(DEFAULT_EXCITE_VALUE)
+{
+  setSHcoef(SH_T1, SH_T2, SH_T3, SH_R1, SH_R2, SH_R3);
+  setExciteValue(DEFAULT_EXCITE_VALUE);
+}
+
+
+SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, uint8_t adcPin, NTC_CONNECT_t ntcConnect) :
+  _DIV_R(divR),
+  _ADC_CHANNEL(adcPin),
+  _OFFSET_TEMP(0),
+  _EXCITE_PIN(-1),
+  _NTC_CONNECT(ntcConnect),
+  _EXCITE_VALUE(DEFAULT_EXCITE_VALUE)
+{
+  setSHcoef(SH_T1, SH_T2, SH_T3, SH_R1, SH_R2, SH_R3);
+  setExciteValue(DEFAULT_EXCITE_VALUE);
+}
+
+
+SHthermistor::SHthermistor(float shA, float shB, float shC, float divR, uint8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue) :
+  SH_A(shA),
+  SH_B(shB),
+  SH_C(shC),
+  _DIV_R(divR),
+  _ADC_CHANNEL(adcPin),
+  _OFFSET_TEMP(offsetT),
+  _EXCITE_PIN(excitePin),
+  _NTC_CONNECT(ntcConnect),
+  _EXCITE_VALUE(exciteValue)
+{
+  setExciteValue(exciteValue);
+}
+
+
+void SHthermistor::setSHcoef(float shA, float shB, float shC) {
+  SH_A = shA;
+  SH_B = shB;
+  SH_C = shC;
+}
+
+
+void SHthermistor::setSHcoef(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3) {
   SH_T1 += 273.15;
   SH_T2 += 273.15;
   SH_T3 += 273.15;
@@ -23,33 +97,11 @@ SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, f
   SH_C = (SH_V - SH_S * SH_W / SH_U) / ((pow(SH_X1, 3) - pow(SH_X2, 3)) - SH_S * ( pow(SH_X1, 3) - pow(SH_X3, 3)) / SH_U);  // Coefficient c
   SH_B = (SH_V - SH_C * (pow(SH_X1, 3) - pow(SH_X2, 3))) / SH_S;                                                            // Coefficient b
   SH_A = 1 / SH_T1 - SH_C * pow(SH_X1, 3) - SH_B * SH_X1;                                                                   // Coefficient a
-  _ADC_PIN = adcPin;
-  _DIV_R = (float)divR;
-  _OFFSET_TEMP = offsetT;
-  _EXCITE_PIN = excitePin;
-  _NTC_CONNECT = ntcConnect;
-  setExciteValue(exciteValue);
-}
-
-
-SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT) {
-  SHthermistor(SH_T1, SH_T2, SH_T3, SH_R1, SH_R2, SH_R3, divR, adcPin, ntcConnect, excitePin, offsetT, DEFAULT_EXCITE_VALUE);
-}
-
-
-SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin) {
-  SHthermistor(SH_T1, SH_T2, SH_T3, SH_R1, SH_R2, SH_R3, divR, adcPin, ntcConnect, excitePin, 0, DEFAULT_EXCITE_VALUE);
-}
-
-
-SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int8_t adcPin, NTC_CONNECT_t ntcConnect) {
-  SHthermistor(SH_T1, SH_T2, SH_T3, SH_R1, SH_R2, SH_R3, divR, adcPin, ntcConnect, -1, 0, DEFAULT_EXCITE_VALUE);
 }
 
 
 float SHthermistor::readR() {
-
-  uint16_t   Ain = 0;           //  alalogRead() value
+  uint16_t Ain = 0;             // alalogRead() value
   float r;                      // resistance of the thermistor
   uint16_t iAin[READ_TIMES];
   uint8_t i;
@@ -58,15 +110,14 @@ float SHthermistor::readR() {
     pinMode(_EXCITE_PIN, OUTPUT);
     digitalWrite(_EXCITE_PIN, HIGH);      // supply voltage only during measurement to avoid self-heating effect
   }
-//  if _(ADC_PIN >= 0) pinMode(_ADC_PIN, INPUT);          // これがないと正しく測定できない場合がある。
-  delay(100);                         // wait time when usig parallel capacitor (1uF) for stable measurement
+//  if _(ADC_PIN >= 0) pinMode(_ADC_CHANNEL, INPUT);   // これがないと正しく測定できない場合がある。
+  delay(100);                                          // wait time when usig parallel capacitor (1uF) for stable measurement
   for (i = 0; i < READ_TIMES; i++) {
     delay(5);
-    iAin[i] = readAdc();
+    iAin[i] = readAdc(_ADC_CHANNEL);
   }
   sort(iAin, READ_TIMES);
-  Ain = iAin[MEDIAN_ORDER];
-  
+  Ain = (iAin[MEDIAN_ORDER - 1] + iAin[MEDIAN_ORDER] + iAin[MEDIAN_ORDER + 1]) / 3;
   if (_EXCITE_PIN >= 0) {
     digitalWrite(_EXCITE_PIN, LOW);   // stop supply voltage after measurement
   }
@@ -89,8 +140,8 @@ float SHthermistor::readR() {
 }
 
 
-uint16_t SHthermistor::readAdc() {
-    return analogRead(_ADC_PIN);
+uint16_t SHthermistor::readAdc(uint8_t adcChannel) {
+  return analogRead(adcChannel);
 }
 
 
@@ -118,9 +169,9 @@ void SHthermistor::setOffsetTemp(float offsetTemp) {
 void SHthermistor::setExciteValue(uint32_t exciteValue) {
   _EXCITE_VALUE = exciteValue;
   if (_NTC_CONNECT == NTC_GND) {
-    _ADC_HL = exciteValue * 0.98;
+    _ADC_HL = _EXCITE_VALUE * 0.98;
   } else {
-    _ADC_HL = exciteValue * 0.02;
+    _ADC_HL = _EXCITE_VALUE * 0.02;
   }
 }
 
