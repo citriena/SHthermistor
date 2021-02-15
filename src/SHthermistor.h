@@ -45,6 +45,7 @@ public:
   float r2temp(float r);
   float readTemp();
   void setDivR(float divR);
+  void setCableR(float cableR);
   void setOffsetTemp(float offsetT);
 
 protected:
@@ -53,6 +54,7 @@ protected:
   float SH_B;
   float SH_C;
   float _DIV_R;
+  float _CABLE_R = 0;
   uint8_t _ADC_CHANNEL;
   float _OFFSET_TEMP;
   int8_t _EXCITE_PIN;

@@ -136,7 +136,7 @@ float SHthermistor::readR() {
       return 0;
     }
   }
-  return r;
+  return r - _CABLE_R;
 }
 
 
@@ -158,6 +158,11 @@ float SHthermistor::readTemp() {
 
 void SHthermistor::setDivR(float divR) {
   _DIV_R = divR;
+}
+
+
+void SHthermistor::setCableR(float cableR) {
+  _CABLE_R = cableR;
 }
 
 

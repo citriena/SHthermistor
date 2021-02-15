@@ -18,6 +18,7 @@ readAdc	KEYWORD2
 r2temp	KEYWORD2
 readTemp	KEYWORD2
 setDivR	KEYWORD2
+setCableR	KEYWORD2
 setOffsetTemp	KEYWORD2
 
 #######################################
