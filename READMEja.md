@@ -1,5 +1,5 @@
 # SHthermistor
- v1.1.0  citriena Dec. 2020
+ v1.1.1  citriena Jun. 2021
 
 ## 概要
 **SHthermistor** はNTCサーミスタで温度を測定するためのArduinoライブラリです。
@@ -11,7 +11,7 @@
 ```
 1/T = A + B*ln(R) + C*(ln(R))^3
 ```
-  * Steinhart and Hart 式の利用にもB定数から近似する方法等いろいろあるようですが、きちんと三元連立方程式を解いてSteinhart and Hart式の係数を出しています。サーミスタによって異なるかもしれませんが、私が主に使っているSEMITEC株式会社103AT-11では 0, 25, 50℃で係数を出せばその範囲でのデータシートとの誤差は**0.01℃**以内です。
+  * Steinhart and Hart 式の利用にもいろいろ方法があるようですが、きちんと三元連立方程式を解いてSteinhart and Hart式の係数を出しています。サーミスタによって異なるかもしれませんが、私が主に使っているSEMITEC株式会社103AT-11では 0, 25, 50℃で係数を出せばその範囲でのデータシートとの誤差は**0.01℃**以内です。
 
 
 * 1回の測定で11回計測し、中央3値の平均を使って温度変換
@@ -33,7 +33,7 @@
 
 ### コンストラクタ
 ````
-SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, uint8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue);
+SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int16_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue);
 
 ````
 * **SH\_T1, SH\_T2, SH\_T3:** 使用温度範囲を含む3点の温度（℃）
@@ -55,7 +55,7 @@ SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, fl
   * 計算値にこの補正値を加算して測定値とします。
 * **exciteValue(オプション):** ADC(ADコンバータ）のexcitePin 読み取り値
   * 以下の設定ができます。
-    * ADC_10BIT_VALUE（デフォルト）
+    * ADC_10BIT_VALUE（デフォルト; Arduino UNO R3のADCビット数）
     * ADC_12BIT_VALUE
     * ADC_14BIT_VALUE
     * ADC_16BIT_VALUE
@@ -65,32 +65,36 @@ SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, fl
 
 例えば、秋月電子商会で扱っている　[SEMITEC株式会社103AT-11](http://akizukidenshi.com/catalog/g/gP-07257/)の場合は、
 ````
-SHthermistor thermistor(0, 25, 50, 27280, 10000, 4160, 1, 10000, 0, NTC_GND, 9);
+SHthermistor thermistor(0, 25, 50, 27280, 10000, 4160, 10000, A0, NTC_GND, 9);
 ````
 みたいに指定します。
 
 Steinhart and Hart式の係数を直接指定したい場合は、
 ````
-SHthermistor(float shA, float shB, float shC, float divR, uint8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue);
+SHthermistor(float shA, float shB, float shC, float divR, int16_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue);
 ````
-を使ってください。
+を使ってください。上記のSEMITEC株式会社103AT-11の場合は、
+````
+SHthermistor(888073909E-04, 2.51425171E-04, 1.92279449E-07, 10000, A0, NTC_GND, 9, DEFAULT_EXCITE_VALUE);
+````
+みたいに指定します。
 
 ### 機能
 ````
 float readTemp();
 ````
 サーミスタの温度を測定します。設定したオフセット値が反映されます。基本的にはこのreadTemp();を使います。
-11回測定し、中央3値の平均値を使って温度を計算します。
+11回測定し、中央3値の平均値を使って温度を計算します。断線している場合は1024を返します。
 
 ````
 float readR();
 ````
-サーミスタの抵抗値を返します。
+サーミスタの抵抗値を返します。断線している場合は0を返します。
 普通は使う必要はありません。
 ````
 float r2temp(float r);
 ````
-引数に指定したサーミスタの抵抗値から温度を返します。補正値が反映されます。
+引数に指定したサーミスタの抵抗値から温度を返します。補正値が反映されます。断線している場合は1024を返します。
 普通は使う必要はありません。
 
 ````
@@ -103,7 +107,7 @@ void setDivR(float divR);
 ````
 void setCableR(float cableR);
 ````
-サーミスタまでのケーブルの抵抗値を設定します。
+サーミスタまでのケーブルの往復抵抗値を設定します。
 ケーブルがよほど長くない限り使う必要はありません。
 ````
 void setOffsetTemp(float offsetT);
@@ -111,7 +115,7 @@ void setOffsetTemp(float offsetT);
 温度の補正値を設定します。
 普通は使う必要はありません。
 
-これも分圧抵抗値と同様に基本的にはコンストラクタで設定しますが、メニューで設定できるようにする場合、もしくは装置毎にArduinoのEEPROMに保存した設定値を読み込んで設定する場合等に使用します。
+これも分圧抵抗値と同様に一般的にはコンストラクタで設定しますが、メニューで設定できるようにする場合、もしくは装置毎にArduinoのEEPROMに保存した設定値を読み込んで設定する場合等に使用します。
 
 ### 別途外部ADコンバータを使う方法
 Arduino UNO R3のADコンバータビット数は10です。一般的な測定には十分ですが、0.1℃の分解能で測定したい場合には不足です。最低でも12ビット、できれば16ビットは必要です。
@@ -137,7 +141,7 @@ ADコンバータの電圧リファレンス（VREF）の種類によって接�
 #### 外部ADコンバータ使用例
 
 VREF端子があるMicrochip MCP3204をADコンバータとして使う場合用に作成したのがsamples/SHthsermisitorMCP320Xtestフォルダ内にある
-SHthermistorMCP320X.h, SHthermistorMCP320X.cpp、およびそれらを使ったサンプルスケッチのSHthsermisitorMCP320Xtest.inoです。
+SHthermistorMCP320X.h, SHthermistorMCP320X.cpp、およびそれらを使ったサンプルスケッチのSHthsermistorMCP320Xtest.inoです。
 MCP3201/3202/3208でも変更無しで使えると思います。
 
 これらのファイルでは、SHthermistorクラスから派生したSHthermistorMCP320Xクラスが定義されています。SHthermistorMCP320Xクラスでは新たなメンバ関数として
@@ -168,3 +172,6 @@ https://edwardmallon.files.wordpress.com/2017/04/ntc-steinhart_and_hart_calculat
 
 ### 1.1.0 - Dec. 31, 2020
 * added setCableR() function.
+
+### 1.1.1 - Jun. 14, 2021
+* bug fix

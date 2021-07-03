@@ -1,7 +1,7 @@
 #ifndef SHthermistorMCP320X_h
 #define SHthermistorMCP320X_h
 
-#include <SHthermistor.h>
+#include <SHthermistor.h>    // https://github.com/citriena/SHthermistor
 
 #define DATAOUT   11 //MOSI
 #define DATAIN    12 //MISO 
@@ -16,7 +16,7 @@ public:
   using SHthermistor::SHthermistor;
 
   void begin(int8_t SELPIN);
-  virtual uint16_t readAdc(uint8_t adcChannel);
+  virtual uint16_t readAdc(int16_t adcChannel);
 
 protected:
   int8_t _SELPIN;

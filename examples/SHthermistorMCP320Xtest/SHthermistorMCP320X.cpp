@@ -21,7 +21,7 @@ void SHthermistorMCP320X::begin(int8_t SELPIN) {
 }
 
 
-uint16_t SHthermistorMCP320X::readAdc(uint8_t adcChannel) {
+uint16_t SHthermistorMCP320X::readAdc(int16_t adcChannel) {
 
   uint16_t adcvalue = 0;
   uint8_t commandbits = B11000000; //command bits - start, mode, chn (3), dont care (3)

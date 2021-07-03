@@ -1,7 +1,7 @@
 #include "SHthermistorMCP320X.h"
 
-SHthermistorMCP320X thermistor(0, 25, 50, 27280, 10000, 4160, 10000, 0, NTC_GND);   // adcPin means analog input channel of MCP320X in SHthermistorMCP320X.
-//SHthermistorMCP320X thermistor(0, 25, 50, 27280, 10000, 4160, 10000, 0, NTC_GND, -1, 0, ADC_12BIT_VALUE);   // adcPin means analog input channel of MCP320X in SHthermistorMCP320X.
+SHthermistorMCP320X thermistor(0, 25, 50, 27280, 10000, 4160, 10000, A0, NTC_GND);   // adcPin means analog input channel of MCP320X in SHthermistorMCP320X.
+//SHthermistorMCP320X thermistor(0, 25, 50, 27280, 10000, 4160, 10000, A0, NTC_GND, -1, 0, ADC_12BIT_VALUE);   // adcPin means analog input channel of MCP320X in SHthermistorMCP320X.
 
 
 void setup() {

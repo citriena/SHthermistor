@@ -3,9 +3,9 @@ circuit
  Vdd---SERIES_RESISTOR---A0---NTC thermistor---GND
 */
 
-#include <SHthermistor.h>
+#include <SHthermistor.h>    // https://github.com/citriena/SHthermistor
 
-SHthermistor thermistor(0, 25, 50, 27280, 10000, 4160, 10000, 0, NTC_GND);
+SHthermistor thermistor(0, 25, 50, 27280, 10000, 4160, 10000, A0, NTC_GND);
 
 void setup() {
   // put your setup code here, to run once:

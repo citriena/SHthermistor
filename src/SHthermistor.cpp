@@ -7,7 +7,7 @@
 // http://www.nktherm.com/tec/linearize.html  Steinhart and Hart 式によるサーミスタ抵抗値の温度変換
 
 
-SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, uint8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue) :
+SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int16_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue) :
   _DIV_R(divR),
   _ADC_CHANNEL(adcPin),
   _OFFSET_TEMP(offsetT),
@@ -20,7 +20,7 @@ SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, f
 }
 
 
-SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, uint8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT) :
+SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int16_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT) :
   _DIV_R(divR),
   _ADC_CHANNEL(adcPin),
   _OFFSET_TEMP(offsetT),
@@ -33,7 +33,7 @@ SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, f
 }
 
 
-SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, uint8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin) :
+SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int16_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin) :
   _DIV_R(divR),
   _ADC_CHANNEL(adcPin),
   _OFFSET_TEMP(0),
@@ -46,7 +46,7 @@ SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, f
 }
 
 
-SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, uint8_t adcPin, NTC_CONNECT_t ntcConnect) :
+SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int16_t adcPin, NTC_CONNECT_t ntcConnect) :
   _DIV_R(divR),
   _ADC_CHANNEL(adcPin),
   _OFFSET_TEMP(0),
@@ -59,7 +59,7 @@ SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, f
 }
 
 
-SHthermistor::SHthermistor(float shA, float shB, float shC, float divR, uint8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue) :
+SHthermistor::SHthermistor(float shA, float shB, float shC, float divR, int16_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue) :
   SH_A(shA),
   SH_B(shB),
   SH_C(shC),
@@ -140,13 +140,13 @@ float SHthermistor::readR() {
 }
 
 
-uint16_t SHthermistor::readAdc(uint8_t adcChannel) {
+uint16_t SHthermistor::readAdc(int16_t adcChannel) {
   return analogRead(adcChannel);
 }
 
 
 float SHthermistor::r2temp(float r) { // culculate temperature from thermistor resistance using Steinhart-Hart equation
-  if (r == 0) return 1024;
+  if (r == 0) return TH_ERR_DATA;
   return (1 / (SH_A + SH_B * log(r) + SH_C * pow(log(r), 3)) - 273.15 + _OFFSET_TEMP); // return temperature in Celcius
 }
 
@@ -168,6 +168,21 @@ void SHthermistor::setCableR(float cableR) {
 
 void SHthermistor::setOffsetTemp(float offsetTemp) {
   _OFFSET_TEMP = offsetTemp;
+}
+
+
+float SHthermistor::getSH_A() {
+  return SH_A;
+}
+
+
+float SHthermistor::getSH_B() {
+  return SH_B;
+}
+
+
+float SHthermistor::getSH_C() {
+  return SH_C;
 }
 
 

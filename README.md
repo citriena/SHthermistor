@@ -1,5 +1,5 @@
 # SHthermistor
- v1.1.0  citriena Dec. 2020
+ v1.1.1  citriena Jun. 2021
 
 ## Introduction
 **SHthermistor** is an Arduino library that supports temperature measurements with NTC thermistor based on Steinhart-Hart equation.
@@ -23,7 +23,7 @@ Ether of the circuits below is available.
 ````
 ### Constructor
 ````
-SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue)
+SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int16_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue)
 ````
 * **SH\_T1, SH\_T2, SH\_T3:** Low, mid, and high temperature (Celcius) of measureing range.
 * **SH\_R1, SH\_R2, SH\_R3:** Thermistor resistance (ohm) at SH_T1, SH_T2, and SH_T3.
@@ -43,7 +43,7 @@ SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, fl
 
 If you want to set coefficients of Steinhart and Hart equation directly use following constructor.
 ````
-SHthermistor(float shA, float shB, float shC, float divR, uint8_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue);
+SHthermistor(float shA, float shB, float shC, float divR, int16_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue);
 ````
 
 ### Functions
@@ -69,7 +69,7 @@ Set series resistance value.
 ````
 void setCableR(float cableR);
 ````
-Set resistance value of the cable to the thermistor.
+Set roundtrip resistance value of the cable to the thermistor.
 
 ````
 void setOffsetTemp(float offsetT);
@@ -94,3 +94,6 @@ https://edwardmallon.files.wordpress.com/2017/04/ntc-steinhart_and_hart_calculat
 
 ### 1.1.0 - Dec. 31, 2020
 * added setCableR() function.
+
+### 1.1.1 - Jun. 14, 2021
+* bug fix
