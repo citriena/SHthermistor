@@ -59,6 +59,11 @@ SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, f
 }
 
 
+SHthermistor::SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3) {
+  setSHcoef(SH_T1, SH_T2, SH_T3, SH_R1, SH_R2, SH_R3);
+}
+
+
 SHthermistor::SHthermistor(float shA, float shB, float shC, float divR, int16_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue) :
   SH_A(shA),
   SH_B(shB),
@@ -71,6 +76,15 @@ SHthermistor::SHthermistor(float shA, float shB, float shC, float divR, int16_t 
   _EXCITE_VALUE(exciteValue)
 {
   setExciteValue(exciteValue);
+}
+
+
+SHthermistor::SHthermistor(float shA, float shB, float shC) :
+  SH_A(shA),
+  SH_B(shB),
+  SH_C(shC)
+{
+  
 }
 
 
@@ -148,6 +162,18 @@ uint16_t SHthermistor::readAdc(int16_t adcChannel) {
 float SHthermistor::r2temp(float r) { // culculate temperature from thermistor resistance using Steinhart-Hart equation
   if (r == 0) return TH_ERR_DATA;
   return (1 / (SH_A + SH_B * log(r) + SH_C * pow(log(r), 3)) - 273.15 + _OFFSET_TEMP); // return temperature in Celcius
+}
+
+
+float SHthermistor::temp2r(float t) { // culculate thermistor resistance from temperature using Steinhart-Hart equation
+  float T = t + 273.15;
+  float x,y;
+  
+  x = (SH_A - 1/T) / SH_C;
+  float SH_BC = pow(SH_B/SH_C, 3);
+  y = sqrt(SH_BC/27 + pow(x, 2)/4);
+  
+  return exp(pow(y - x/2, 1/3.) - pow(y + x/2, 1/3.)); // return resistance in ohm
 }
 
 

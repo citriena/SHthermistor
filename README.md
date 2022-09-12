@@ -97,3 +97,6 @@ https://edwardmallon.files.wordpress.com/2017/04/ntc-steinhart_and_hart_calculat
 
 ### 1.1.1 - Jun. 14, 2021
 * bug fix
+
+### 1.1.2 - Jun. 14, 2021
+* add support for inverse Steinhart and Hart equation to get the Temperature for known Resitance with Example 

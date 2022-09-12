@@ -12,15 +12,28 @@ SHthermistor	KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
+thermistor	KEYWORD2
 setSHcoef	KEYWORD2
 readR	KEYWORD2
 readAdc	KEYWORD2
 r2temp	KEYWORD2
+temp2r	KEYWORD2
 readTemp	KEYWORD2
 setDivR	KEYWORD2
 setCableR	KEYWORD2
 setOffsetTemp	KEYWORD2
+getSH_A	KEYWORD2
+getSH_B	KEYWORD2
+getSH_C	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
 #######################################
+
+NTC_EXCITE	LITERAL1
+NTC_GND	LITERAL1
+ADC_10BIT_VALUE	LITERAL1
+ADC_12BIT_VALUE	LITERAL1
+ADC_14BIT_VALUE	LITERAL1
+ADC_16BIT_VALUE	LITERAL1
+DEFAULT_EXCITE_VALUE	LITERAL1
