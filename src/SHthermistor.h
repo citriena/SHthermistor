@@ -37,14 +37,17 @@ public:
   SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int16_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT);
   SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int16_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin);
   SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3, float divR, int16_t adcPin, NTC_CONNECT_t ntcConnect);
+  SHthermistor(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3);
 
   SHthermistor(float shA, float shB, float shC, float divR, int16_t adcPin, NTC_CONNECT_t ntcConnect, int8_t excitePin, float offsetT, uint32_t exciteValue);
+  SHthermistor(float shA, float shB, float shC);
 
   void setSHcoef(float shA, float shB, float shC);
   void setSHcoef(float SH_T1, float SH_T2, float SH_T3, float SH_R1, float SH_R2, float SH_R3);
   float readR();
   virtual uint16_t readAdc(int16_t adcChannel);
   float r2temp(float r);
+  float temp2r(float t);
   float readTemp();
   void setDivR(float divR);
   void setCableR(float cableR);

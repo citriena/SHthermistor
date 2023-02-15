@@ -1,5 +1,5 @@
 # SHthermistor
- v1.1.1  citriena Jun. 2021
+ v1.1.2  citriena Jun. 2021
 
 ## Introduction
 **SHthermistor** is an Arduino library that supports temperature measurements with NTC thermistor based on Steinhart-Hart equation.
@@ -97,3 +97,6 @@ https://edwardmallon.files.wordpress.com/2017/04/ntc-steinhart_and_hart_calculat
 
 ### 1.1.1 - Jun. 14, 2021
 * bug fix
+
+### 1.1.2 - Sep. 12, 2022
+* add support for inverse Steinhart and Hart equation to get the Temperature for known Resitance with Example 
